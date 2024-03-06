@@ -15,11 +15,10 @@ describe('App F Component', ()=>{
     expect(resetB).toBeInTheDocument()
     
   })
-  test('submit button renders', ()=>{
-    const submitB = screen.querySelector('#submit')
-    expect(submitB).toBeInTheDocument()
-    expect(submitB).toBeVisible()
-   
+  test('right button renders', ()=>{
+    const rightB = screen.queryByText('RIGHT')
+    expect(rightB).toBeInTheDocument()
+    expect(rightB).toBeVisible()
   })
   test('left button renders', ()=>{
     const leftB = screen.queryByText('LEFT')
