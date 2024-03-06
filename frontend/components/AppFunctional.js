@@ -26,26 +26,12 @@ export default function AppFunctional(props) {
   function getXY() {
    
     return { x: state.x, y: state.y }
-    // if(state.index===0) return 'Coordinates (1, 1)'
-    // if(state.index===1) return 'Coordinates (2, 1)'
-    // if(state.index===2) return 'Coordinates (3, 1)'
-    // if(state.index===3) return 'Coordinates (1, 2)'
-    // if(state.index===5) return 'Coordinates (3, 2)'
-    // if(state.index===4) return 'Coordinates (2, 2)'
-    // if(state.index===6) return 'Coordinates (1, 3)'
-    // if(state.index===7) return 'Coordinates (2, 3)'
-    // if(state.index===8) return 'Coordinates (3, 3)'
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
   }
 
   function getXYMessage() {
     const location = getXY()
     console.log('help')
     return `Coordinates (${location.x}, ${location.y})`
-    // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
-    // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
-    // returns the fully constructed string.
   }
 
   function reset() {
@@ -116,7 +102,17 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
-
+    axios.post('http://localhost:9000/api/result', {
+      x: state.x, y: state.y, steps: state.steps, email: state.email
+    })
+    .then(res=>{
+      console.log(res)
+      setState({...state, email: '', message: res.data.message})
+    })
+    .catch(err=>{
+      //console.error(err)
+      setState({...state, message: err.response.data.message})
+    })
     // Use a POST request to send a payload to the server.
   }
 
@@ -129,8 +125,8 @@ export default function AppFunctional(props) {
       <div id="grid">
         {
           [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-            <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-              {idx === 4 ? 'B' : null}
+            <div key={idx} className={`square${idx === state.index ? ' active' : ''}`}>
+              {idx === state.index ? 'B' : null}
             </div>
           ))
         }
@@ -147,7 +143,7 @@ export default function AppFunctional(props) {
       </div>
       <form>
         <input id="email" type="email" name= 'email' value={state.email} onChange = {onChange} placeholder="type email"></input>
-        <input id="submit" type="submit"></input>
+        <input id="submit" type="submit" onClick={onSubmit}></input>
       </form>
     </div>
   )
